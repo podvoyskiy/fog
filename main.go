@@ -9,11 +9,21 @@ import (
 	u "github.com/podvoyskiy/fog/utils"
 )
 
+var (
+	version   = "dev"
+	buildTime = "unknown"
+)
+
 func main() {
+	args := os.Args[1:]
+
+	if len(args) == 1 && (args[0] == "--version" || args[0] == "-v") {
+		u.Cyan().Printf("fog %s (built at %s)\n", version, buildTime)
+		return
+	}
+
 	configDir := u.Must(os.UserConfigDir())
 	config := u.Must(config.Load(configDir))
-
-	args := os.Args[1:]
 
 	switch len(args) {
 	case 0:

@@ -7,7 +7,7 @@ import (
 type FilterType uint8
 
 const (
-	typeSkim FilterType = iota + 1
+	typeFuzzy FilterType = iota + 1
 	typeSubstring
 )
 
@@ -22,20 +22,21 @@ type MatchResult struct {
 
 type Filter interface {
 	GetId() uint8
+	GetName() string
 	Match(commands []string, pattern string) []MatchResult
 }
 
 func Default() Filter {
-	return &skimFilter{}
+	return &fuzzyFilter{}
 }
 
 func FromUint8(id uint8) (Filter, error) {
 	switch FilterType(id) {
-	case typeSkim:
-		return &skimFilter{}, nil
+	case typeFuzzy:
+		return &fuzzyFilter{}, nil
 	case typeSubstring:
 		return &substringFilter{}, nil
 	default:
-		return nil, fmt.Errorf("unknown filter type %d, expected %d (skim) or %d (substring)", id, typeSkim, typeSubstring)
+		return nil, fmt.Errorf("unknown filter type %d, expected %d (fuzzy) or %d (substring)", id, typeFuzzy, typeSubstring)
 	}
 }

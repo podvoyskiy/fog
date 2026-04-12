@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestSkimFilter(t *testing.T) {
-	f, err := FromUint8(typeSkim.uint8())
+func TestFuzzyFilter(t *testing.T) {
+	f, err := FromUint8(typeFuzzy.uint8())
 	if err != nil {
 		t.Fatal(err)
 	}
