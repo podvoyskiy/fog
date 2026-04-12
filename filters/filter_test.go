@@ -18,13 +18,13 @@ func TestFilterDebug(t *testing.T) {
 	pattern := "ls"
 	t.Logf("pattern: %q", pattern)
 
-	for _, typeF := range GetFilterTypes() {
+	for _, typeF := range AllFilterTypes() {
 		f, err := FromUint8(typeF.uint8())
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		t.Logf("=== filter: %s ===", typeF.toString())
+		t.Logf("=== filter: %s ===", typeF)
 
 		matches := f.Match(commands, pattern)
 

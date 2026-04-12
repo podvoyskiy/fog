@@ -14,7 +14,7 @@ func (f *substringFilter) GetId() uint8 {
 }
 
 func (f *substringFilter) GetName() string {
-	return typeSubstring.toString()
+	return typeSubstring.String()
 }
 
 func (f *substringFilter) Match(commands []string, pattern string) []MatchResult {

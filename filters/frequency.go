@@ -14,7 +14,7 @@ func (f *frequencyFilter) GetId() uint8 {
 }
 
 func (f *frequencyFilter) GetName() string {
-	return typeFrequency.toString()
+	return typeFrequency.String()
 }
 
 func (f *frequencyFilter) Match(commands []string, pattern string) []MatchResult {

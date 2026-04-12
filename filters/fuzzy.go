@@ -16,7 +16,7 @@ func (f *fuzzyFilter) GetId() uint8 {
 }
 
 func (f *fuzzyFilter) GetName() string {
-	return typeFuzzy.toString()
+	return typeFuzzy.String()
 }
 
 func (f *fuzzyFilter) Match(commands []string, pattern string) []MatchResult {
