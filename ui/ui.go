@@ -28,7 +28,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case "enter":
 		if cmd, ok := m.searcher.GetSelectedCommand(); ok {
-			fmt.Print(cmd)
+			fmt.Printf("history -s \"%s\"\n%s", cmd, cmd)
 			return m, tea.Quit
 		}
 
