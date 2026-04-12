@@ -2,6 +2,7 @@ package filters
 
 import (
 	"sort"
+	"strings"
 
 	"github.com/lithammer/fuzzysearch/fuzzy"
 )
@@ -15,16 +16,25 @@ func (f *fuzzyFilter) GetId() uint8 {
 }
 
 func (f *fuzzyFilter) GetName() string {
-	return "FuzzyFilter"
+	return typeFuzzy.toString()
 }
 
 func (f *fuzzyFilter) Match(commands []string, pattern string) []MatchResult {
 	if pattern == "" {
 		return nil
 	}
+	pattern = strings.ToLower(pattern)
 
+	seen := make(map[string]bool)
 	var results []MatchResult
+
 	for i, cmd := range commands {
+		cmd = strings.ToLower(cmd)
+		if seen[cmd] {
+			continue
+		}
+		seen[cmd] = true
+
 		if fuzzy.Match(pattern, cmd) {
 			rank := fuzzy.RankMatch(pattern, cmd)
 			results = append(results, MatchResult{

@@ -51,15 +51,10 @@ func Load() (*CommandHistory, error) {
 		return nil, err
 	}
 
-	seen := make(map[string]bool)
 	commands := make([]string, 0, len(lines))
 
 	for i := len(lines) - 1; i >= 0; i-- {
-		cmd := lines[i]
-		if !seen[cmd] {
-			seen[cmd] = true
-			commands = append(commands, cmd)
-		}
+		commands = append(commands, lines[i])
 	}
 
 	return &CommandHistory{Commands: commands}, nil

@@ -54,7 +54,7 @@ func (c *AppConfig) PrintHelp() {
 	u.Yellow().Underline().Println("Options:")
 	fmt.Printf("%s                  Show this help\n", u.Blue().Sprint("  -h, --help"))
 	fmt.Printf("%s     Set maximum number of results to display (current: %d)\n", u.Blue().Sprint("  -m, --max_results {NUM}"), c.MaxResults)
-	fmt.Printf("%s     Set filter algorithm [1 - FuzzyFilter, 2 - SubstringFilter] (current: %d)\n",
+	fmt.Printf("%s     Set filter algorithm [1 - FuzzyFilter, 2 - SubstringFilter, 3 - FrequencyFilter] (current: %d)\n",
 		u.Blue().Sprint("  -f, --filter      {NUM}"), c.Filter.GetId())
 }
 

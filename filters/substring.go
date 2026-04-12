@@ -14,21 +14,26 @@ func (f *substringFilter) GetId() uint8 {
 }
 
 func (f *substringFilter) GetName() string {
-	return "SubstringFilter"
+	return typeSubstring.toString()
 }
 
 func (f *substringFilter) Match(commands []string, pattern string) []MatchResult {
 	if pattern == "" {
 		return nil
 	}
+	pattern = strings.ToLower(pattern)
 
-	patternLower := strings.ToLower(pattern)
+	seen := make(map[string]bool)
 	var results []MatchResult
 
 	for i, cmd := range commands {
-		cmdLower := strings.ToLower(cmd)
+		cmd = strings.ToLower(cmd)
+		if seen[cmd] {
+			continue
+		}
+		seen[cmd] = true
 
-		pos := strings.Index(cmdLower, patternLower) //find first occurrence position
+		pos := strings.Index(cmd, pattern) //find first occurrence position
 		if pos != -1 {
 			//score: 100 minus position (earlier occurrence = higher score)
 			score := 100 - pos

@@ -12,18 +12,19 @@ func TestFilterDebug(t *testing.T) {
 		"lsblk",
 		"lsblk -f",
 		"lscpu",
-		"cd ~",
+		"cd ~/home/LS/tmp",
+		"lsblk -f",
 	}
 	pattern := "ls"
 	t.Logf("pattern: %q", pattern)
 
-	for _, typeF := range []FilterType{typeFuzzy, typeSubstring} {
+	for _, typeF := range GetFilterTypes() {
 		f, err := FromUint8(typeF.uint8())
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		t.Logf("=== filter: %s ===", f.GetName())
+		t.Logf("=== filter: %s ===", typeF.toString())
 
 		matches := f.Match(commands, pattern)
 
