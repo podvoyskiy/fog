@@ -16,11 +16,13 @@ type Filter interface {
 }
 
 func Default() Filter {
-	return &fuzzyFilter{}
+	return &hybridFilter{}
 }
 
 func FromUint8(id uint8) (Filter, error) {
 	switch FilterType(id) {
+	case typeHybrid:
+		return &hybridFilter{}, nil
 	case typeFuzzy:
 		return &fuzzyFilter{}, nil
 	case typeSubstring:

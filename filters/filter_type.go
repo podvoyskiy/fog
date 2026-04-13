@@ -8,13 +8,14 @@ import (
 type FilterType uint8
 
 const (
-	typeFuzzy FilterType = iota + 1
+	typeHybrid FilterType = iota + 1
+	typeFuzzy
 	typeSubstring
 	typeFrequency
 )
 
 func AllFilterTypes() []FilterType {
-	return []FilterType{typeFuzzy, typeSubstring, typeFrequency}
+	return []FilterType{typeHybrid, typeFuzzy, typeSubstring, typeFrequency}
 }
 
 func AvailableFilters() string {
@@ -31,6 +32,8 @@ func (f FilterType) uint8() uint8 {
 
 func (f FilterType) String() string {
 	switch f {
+	case typeHybrid:
+		return "hybrid(frequency then fuzzy)"
 	case typeFuzzy:
 		return "fuzzy"
 	case typeSubstring:
