@@ -1,4 +1,4 @@
-### fog - Fuzzy Command History Search
+### Fuzzy Command History Search
 
 **Linux/Bash only**
 

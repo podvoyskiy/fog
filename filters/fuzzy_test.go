@@ -33,7 +33,7 @@ func TestFuzzyFilter(t *testing.T) {
 			matches := f.Match(tt.commands, tt.pattern)
 
 			if len(matches) != len(tt.want) {
-				t.Fatal(fmt.Sprintf("got %d matches | want %d matches", len(matches), len(tt.want)))
+				t.Fatalf("got %d matches | want %d matches", len(matches), len(tt.want))
 			}
 
 			for _, match := range matches {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/podvoyskiy/fog/cmds"
@@ -27,13 +28,15 @@ func main() {
 
 	switch len(args) {
 	case 0:
-		ui.Run(config)
-		break
+		if err := ui.Run(config); err != nil {
+			//print error as echo command to prevent eval from executing it
+			fmt.Printf("echo '%s'\n", u.Red().Sprint(err))
+			os.Exit(1)
+		}
 	default:
 		if err := cmds.HandleCmd(config, args); err != nil {
 			u.Yellow().Println(err)
-			return
+			os.Exit(1)
 		}
-		break
 	}
 }

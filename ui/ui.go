@@ -8,6 +8,7 @@ import (
 	s "github.com/podvoyskiy/fog/searcher"
 
 	tea "github.com/charmbracelet/bubbletea"
+	u "github.com/podvoyskiy/fog/utils"
 )
 
 type model struct {
@@ -66,14 +67,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	out := "> " + m.searcher.SearchQuery + "\n"
+	prompt := u.Cyan().Sprint("> " + m.searcher.SearchQuery)
+	selected := u.Green().Bold().Sprint
+
+	out := prompt + "\n"
 
 	count := m.searcher.ResultCount()
 
 	for i := range count {
 		if cmd, ok := m.searcher.GetCommandByIndex(i); ok {
 			if i == m.searcher.SelectedIndex {
-				out += "> " + cmd + "\n"
+				out += "> " + selected(cmd) + "\n"
 			} else {
 				out += "  " + cmd + "\n"
 			}
@@ -91,7 +95,7 @@ func Run(config *c.AppConfig) error {
 
 	prog := tea.NewProgram(model{searcher: s},
 		tea.WithAltScreen(),
-		tea.WithOutput(os.Stderr), // TUI goes to stderr so stdout only contains the selected command for eval "$(program)"
+		tea.WithOutput(os.Stderr), // TUI goes to stderr so stdout only contains the selected command for eval "$(cmd)"
 	)
 
 	_, err = prog.Run()
