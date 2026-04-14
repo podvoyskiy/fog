@@ -6,10 +6,7 @@ import (
 )
 
 func TestFrequencyFilter(t *testing.T) {
-	f, err := FromUint8(typeFrequency.uint8())
-	if err != nil {
-		t.Fatal(err)
-	}
+	f := &FrequencyFilter{}
 
 	tests := []struct {
 		commands []string

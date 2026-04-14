@@ -31,7 +31,9 @@ func HandleCmd(config *c.AppConfig, args []string) error {
 		}
 		u.Green().Printf("updated settings %s | value: %d\n", cmd, value)
 		return nil
-	case "help", "-h", "--help":
+	case "-s", "--stats":
+		return config.PrintStats()
+	case "-h", "--help":
 		config.PrintHelp()
 		return nil
 	default:

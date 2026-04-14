@@ -6,10 +6,7 @@ import (
 )
 
 func TestFuzzyFilter(t *testing.T) {
-	f, err := FromUint8(typeFuzzy.uint8())
-	if err != nil {
-		t.Fatal(err)
-	}
+	f := &fuzzyFilter{}
 
 	tests := []struct {
 		commands []string

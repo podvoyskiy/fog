@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	f "github.com/podvoyskiy/fog/filters"
+	"github.com/podvoyskiy/fog/history"
 	u "github.com/podvoyskiy/fog/utils"
 )
 
@@ -50,9 +51,31 @@ func (c *AppConfig) Update() error {
 	return os.WriteFile(c.pathToFile, []byte(content), 0644)
 }
 
+func (c *AppConfig) PrintStats() error {
+	history, err := history.Load()
+	if err != nil {
+		return err
+	}
+
+	u.Cyan().Bold().Println("Most used commands:")
+
+	f := &f.FrequencyFilter{}
+	topCommands := f.All(history.Commands)
+
+	for i, cmd := range topCommands {
+		if i >= 40 {
+			break
+		}
+		fmt.Printf("%d: %s (%s times)\n", i+1, history.Commands[cmd.Index], u.White().Bold().Sprint(cmd.Score))
+	}
+
+	return nil
+}
+
 func (c *AppConfig) PrintHelp() {
 	u.Yellow().Underline().Println("Options:")
 	fmt.Printf("%s            Show this help\n", u.Blue().Sprint("  -h, --help"))
+	fmt.Printf("%s           Most used commands\n", u.Blue().Sprint("  -s, --stats"))
 	fmt.Printf("%s     Limit results to NUM (current: %d)\n", u.Blue().Sprint("  -l, --limit {NUM}"), c.Limit)
 }
 

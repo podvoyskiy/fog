@@ -13,6 +13,7 @@ func Green() *ColorBuilder  { return &ColorBuilder{color: 32} }
 func Yellow() *ColorBuilder { return &ColorBuilder{color: 33} }
 func Blue() *ColorBuilder   { return &ColorBuilder{color: 34} }
 func Cyan() *ColorBuilder   { return &ColorBuilder{color: 36} }
+func White() *ColorBuilder  { return &ColorBuilder{color: 37} }
 
 func (c *ColorBuilder) Bold() *ColorBuilder {
 	c.bold = true
