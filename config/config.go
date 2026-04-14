@@ -10,12 +10,12 @@ import (
 	u "github.com/podvoyskiy/fog/utils"
 )
 
-const defaultMaxResults = 10
+const defaultLimit = 10
 
 type AppConfig struct {
 	pathToFile string
-	MaxResults uint8
-	Filter     f.Filter
+	Limit      uint8
+	Filter     f.Filtering
 }
 
 func Load(configDir string) (*AppConfig, error) {
@@ -27,7 +27,7 @@ func Load(configDir string) (*AppConfig, error) {
 
 	config := &AppConfig{
 		pathToFile: configFile,
-		MaxResults: defaultMaxResults,
+		Limit:      defaultLimit,
 		Filter:     f.Default(),
 	}
 
@@ -45,21 +45,19 @@ func Load(configDir string) (*AppConfig, error) {
 }
 
 func (c *AppConfig) Update() error {
-	content := fmt.Sprintf("max_results=%d\nfilter_id=%d\n", c.MaxResults, c.Filter.GetId())
+	content := fmt.Sprintf("limit=%d\n", c.Limit)
 
 	return os.WriteFile(c.pathToFile, []byte(content), 0644)
 }
 
 func (c *AppConfig) PrintHelp() {
 	u.Yellow().Underline().Println("Options:")
-	fmt.Printf("%s                  Show this help\n", u.Blue().Sprint("  -h, --help"))
-	fmt.Printf("%s     Set maximum number of results to display (current: %d)\n", u.Blue().Sprint("  -m, --max_results {NUM}"), c.MaxResults)
-	fmt.Printf("%s     Set filter algorithm [%s] (current: %d)\n",
-		u.Blue().Sprint("  -f, --filter      {NUM}"), f.AvailableFilters(), c.Filter.GetId())
+	fmt.Printf("%s            Show this help\n", u.Blue().Sprint("  -h, --help"))
+	fmt.Printf("%s     Limit results to NUM (current: %d)\n", u.Blue().Sprint("  -l, --limit {NUM}"), c.Limit)
 }
 
 func (c *AppConfig) ResetToDefaults() {
-	c.MaxResults = defaultMaxResults
+	c.Limit = defaultLimit
 	c.Filter = f.Default()
 }
 
@@ -98,15 +96,8 @@ func (c *AppConfig) loadFromConfig() error {
 		}
 
 		switch key {
-		case "max_results":
-			c.MaxResults = value
-
-		case "filter_id":
-			filter, err := f.FromUint8(value)
-			if err != nil {
-				return err
-			}
-			c.Filter = filter
+		case "limit":
+			c.Limit = value
 		default:
 			return fmt.Errorf("unknown config key: %s", key)
 		}

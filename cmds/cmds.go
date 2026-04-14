@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	c "github.com/podvoyskiy/fog/config"
-	f "github.com/podvoyskiy/fog/filters"
 	u "github.com/podvoyskiy/fog/utils"
 )
 
@@ -13,7 +12,7 @@ func HandleCmd(config *c.AppConfig, args []string) error {
 	cmd := strings.ToLower(args[0])
 
 	switch cmd {
-	case "--max_results", "-m", "--filter", "-f":
+	case "--limit", "-l":
 		if len(args) < 2 {
 			return fmt.Errorf("missing value for %q", cmd)
 		}
@@ -22,20 +21,10 @@ func HandleCmd(config *c.AppConfig, args []string) error {
 		if err != nil {
 			return err
 		}
-
-		switch cmd {
-		case "--max_results", "-m":
-			if value == 0 {
-				return fmt.Errorf("max_results cannot be 0")
-			}
-			config.MaxResults = value
-		case "--filter", "-f":
-			filter, err := f.FromUint8(value)
-			if err != nil {
-				return err
-			}
-			config.Filter = filter
+		if value == 0 {
+			return fmt.Errorf("limit cannot be 0")
 		}
+		config.Limit = value
 
 		if err := config.Update(); err != nil {
 			return err

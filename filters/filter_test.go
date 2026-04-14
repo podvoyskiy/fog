@@ -15,21 +15,23 @@ func TestFilterDebug(t *testing.T) {
 		"cd ~/home/LS/tmp",
 		"lsblk -f",
 	}
-	pattern := "ls"
-	t.Logf("pattern: %q", pattern)
 
-	for _, typeF := range AllFilterTypes() {
-		f, err := FromUint8(typeF.uint8())
-		if err != nil {
-			t.Fatal(err)
-		}
+	for _, pattern := range []string{"ls", "ls  "} {
+		t.Logf("\npattern: %q", pattern)
 
-		t.Logf("=== filter: %s ===", typeF)
+		for _, typeF := range allFilterTypes() {
+			f, err := FromUint8(typeF.uint8())
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		matches := f.Match(commands, pattern)
+			t.Logf("=== filter: %s ===", typeF)
 
-		for i, m := range matches {
-			t.Logf("%d: score=%d, cmd=%q", i, m.Score, commands[m.Index])
+			matches := f.Match(commands, pattern)
+
+			for _, m := range matches {
+				t.Logf("score=%d, cmd=%q", m.Score, commands[m.Index])
+			}
 		}
 	}
 }

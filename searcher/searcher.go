@@ -6,15 +6,15 @@ import (
 )
 
 type Searcher struct {
-	filter          f.Filter
-	MaxResults      uint8
-	Commands        []string
-	FilteredIndices []int
+	filter          f.Filtering
+	limit           uint8
+	commands        []string
+	filteredIndices []int
 	SelectedIndex   int
 	SearchQuery     string
 }
 
-func Init(f f.Filter, maxResults uint8) (*Searcher, error) {
+func Init(f f.Filtering, limit uint8) (*Searcher, error) {
 	history, err := history.Load()
 	if err != nil {
 		return nil, err
@@ -22,9 +22,9 @@ func Init(f f.Filter, maxResults uint8) (*Searcher, error) {
 
 	return &Searcher{
 		filter:          f,
-		MaxResults:      maxResults,
-		Commands:        history.Commands,
-		FilteredIndices: nil,
+		limit:           limit,
+		commands:        history.Commands,
+		filteredIndices: nil,
 		SelectedIndex:   0,
 		SearchQuery:     "",
 	}, nil
@@ -33,15 +33,15 @@ func Init(f f.Filter, maxResults uint8) (*Searcher, error) {
 func (s *Searcher) ApplyFilter() {
 	s.SelectedIndex = 0
 
-	matches := s.filter.Match(s.Commands, s.SearchQuery)
-	limit := min(len(matches), int(s.MaxResults))
+	matches := s.filter.Match(s.commands, s.SearchQuery)
+	limit := min(len(matches), int(s.limit))
 
 	indices := make([]int, 0, limit)
 	for i := range limit {
 		indices = append(indices, matches[i].Index)
 	}
 
-	s.FilteredIndices = indices
+	s.filteredIndices = indices
 }
 
 func (s *Searcher) GetSelectedCommand() (string, bool) {
@@ -49,18 +49,18 @@ func (s *Searcher) GetSelectedCommand() (string, bool) {
 }
 
 func (s *Searcher) GetCommandByIndex(index int) (string, bool) {
-	if index < 0 || index >= len(s.FilteredIndices) {
+	if index < 0 || index >= len(s.filteredIndices) {
 		return "", false
 	}
 
-	idx := s.FilteredIndices[index]
-	if idx < len(s.Commands) {
-		return s.Commands[idx], true
+	idx := s.filteredIndices[index]
+	if idx < len(s.commands) {
+		return s.commands[idx], true
 	}
 
 	return "", false
 }
 
 func (s *Searcher) ResultCount() int {
-	return len(s.FilteredIndices)
+	return len(s.filteredIndices)
 }

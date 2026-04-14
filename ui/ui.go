@@ -88,7 +88,7 @@ func (m model) View() string {
 }
 
 func Run(config *c.AppConfig) error {
-	s, err := s.Init(config.Filter, config.MaxResults)
+	s, err := s.Init(config.Filter, config.Limit)
 	if err != nil {
 		return err
 	}

@@ -20,9 +20,8 @@ func TestHandleCmd(t *testing.T) {
 	}{
 		{[]string{"fake arg"}, true},
 		{[]string{"-h"}, false},
-		{[]string{"-f", "10"}, true},
-		{[]string{"-f", "3"}, false},
-		{[]string{"--max_results", "30"}, false},
+		{[]string{"-l", "foo"}, true},
+		{[]string{"--limit", "30"}, false},
 	}
 
 	for i, tt := range tests {
@@ -45,7 +44,7 @@ func TestHandleCmdUpdatesConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = HandleCmd(cfg, []string{"-m", "20"})
+	err = HandleCmd(cfg, []string{"-l", "20"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +54,7 @@ func TestHandleCmdUpdatesConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if newCfg.MaxResults != 20 {
-		t.Fatalf("config not saved: MaxResults = %d, want 20", newCfg.MaxResults)
+	if newCfg.Limit != 20 {
+		t.Fatalf("config not saved: limit = %d, want 20", newCfg.Limit)
 	}
 }

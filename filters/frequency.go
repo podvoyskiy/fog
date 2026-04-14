@@ -7,14 +7,10 @@ import (
 
 type frequencyFilter struct{}
 
-var _ Filter = (*frequencyFilter)(nil)
+var _ Filtering = (*frequencyFilter)(nil)
 
 func (f *frequencyFilter) GetId() uint8 {
 	return typeFrequency.uint8()
-}
-
-func (f *frequencyFilter) GetName() string {
-	return typeFrequency.String()
 }
 
 func (f *frequencyFilter) Match(commands []string, pattern string) []MatchResult {

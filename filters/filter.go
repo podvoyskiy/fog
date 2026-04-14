@@ -1,36 +1,19 @@
 package filters
 
-import (
-	"fmt"
-)
+// first tries exact substring matches sorted by frequency. if no exact matches found, falls back to fuzzy search.
+type Filter struct{}
 
-type MatchResult struct {
-	Score int
-	Index int
+var _ Filtering = (*Filter)(nil)
+
+func (f *Filter) GetId() uint8 {
+	return typeDefault.uint8()
 }
 
-type Filter interface {
-	GetId() uint8
-	GetName() string
-	Match(commands []string, pattern string) []MatchResult
-}
-
-func Default() Filter {
-	return &hybridFilter{}
-}
-
-func FromUint8(id uint8) (Filter, error) {
-	switch FilterType(id) {
-	case typeHybrid:
-		return &hybridFilter{}, nil
-	case typeFuzzy:
-		return &fuzzyFilter{}, nil
-	case typeSubstring:
-		return &substringFilter{}, nil
-	case typeFrequency:
-		return &frequencyFilter{}, nil
-	default:
-		return nil, fmt.Errorf("unknown filter type %d, expected %s",
-			id, AvailableFilters())
+func (f *Filter) Match(commands []string, pattern string) []MatchResult {
+	// priority 1: exact matches with frequency sorting
+	if matches := (&frequencyFilter{}).Match(commands, pattern); len(matches) > 0 {
+		return matches
 	}
+	// priority 2: fuzzy search
+	return (&fuzzyFilter{}).Match(commands, pattern)
 }

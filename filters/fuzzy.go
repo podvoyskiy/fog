@@ -9,14 +9,10 @@ import (
 
 type fuzzyFilter struct{}
 
-var _ Filter = (*fuzzyFilter)(nil)
+var _ Filtering = (*fuzzyFilter)(nil)
 
 func (f *fuzzyFilter) GetId() uint8 {
 	return typeFuzzy.uint8()
-}
-
-func (f *fuzzyFilter) GetName() string {
-	return typeFuzzy.String()
 }
 
 func (f *fuzzyFilter) Match(commands []string, pattern string) []MatchResult {

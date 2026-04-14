@@ -8,19 +8,18 @@ import (
 type FilterType uint8
 
 const (
-	typeHybrid FilterType = iota + 1
+	typeDefault FilterType = iota + 1
 	typeFuzzy
-	typeSubstring
 	typeFrequency
 )
 
-func AllFilterTypes() []FilterType {
-	return []FilterType{typeHybrid, typeFuzzy, typeSubstring, typeFrequency}
+func allFilterTypes() []FilterType {
+	return []FilterType{typeDefault, typeFuzzy, typeFrequency}
 }
 
-func AvailableFilters() string {
+func availableFilters() string {
 	var parts []string
-	for _, ft := range AllFilterTypes() {
+	for _, ft := range allFilterTypes() {
 		parts = append(parts, fmt.Sprintf("%d - %s", ft.uint8(), ft))
 	}
 	return strings.Join(parts, ", ")
@@ -32,12 +31,10 @@ func (f FilterType) uint8() uint8 {
 
 func (f FilterType) String() string {
 	switch f {
-	case typeHybrid:
-		return "hybrid(frequency then fuzzy)"
+	case typeDefault:
+		return "default"
 	case typeFuzzy:
 		return "fuzzy"
-	case typeSubstring:
-		return "substring"
 	case typeFrequency:
 		return "frequency"
 	default:
