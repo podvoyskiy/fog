@@ -5,7 +5,7 @@ LDFLAGS := -ldflags "-s -w -X main.version=$(VERSION) -X main.buildTime=$(BUILD_
 GOPATH := $(shell go env GOPATH)
 GOLANGCI_LINT := $(GOPATH)/bin/golangci-lint
 
-.PHONY: build release test testv testc testf clean help lint
+.PHONY: build release test testv testc testf testr bench clean lint help
 
 build:
 	go build -o fog .
@@ -24,6 +24,12 @@ testc:
 
 testf:
 	go test -v -run TestFilterDebug ./filters
+
+testr:
+	go test -v -run TestFilterRace -count=1 ./filters
+
+bench: 
+	go test -bench=. -benchmem ./filters
 
 clean:
 	rm -f fog

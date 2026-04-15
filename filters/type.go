@@ -1,10 +1,5 @@
 package filters
 
-import (
-	"fmt"
-	"strings"
-)
-
 type FilterType uint8
 
 const (
@@ -13,16 +8,15 @@ const (
 	typeFrequency
 )
 
-func allFilterTypes() []FilterType {
-	return []FilterType{typeDefault, typeFuzzy, typeFrequency}
-}
-
-func availableFilters() string {
-	var parts []string
-	for _, ft := range allFilterTypes() {
-		parts = append(parts, fmt.Sprintf("%d - %s", ft.uint8(), ft))
+func newFilter(typeF FilterType) Filtering {
+	switch typeF {
+	case typeFuzzy:
+		return &fuzzyFilter{}
+	case typeFrequency:
+		return &FrequencyFilter{}
+	default:
+		return &filter{}
 	}
-	return strings.Join(parts, ", ")
 }
 
 func (f FilterType) uint8() uint8 {
