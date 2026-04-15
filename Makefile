@@ -11,7 +11,7 @@ build:
 	go build -o fog .
 
 release:
-	go build $(LDFLAGS) -trimpath -o fog .
+	CGO_ENABLED=0 go build $(LDFLAGS) -trimpath -o fog .
 
 test:
 	go test ./...
