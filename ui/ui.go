@@ -36,7 +36,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case "right":
 		if cmd, ok := m.searcher.GetSelectedCommand(); ok {
-			fmt.Printf("echo '%s'", cmd)
+			fmt.Printf("echo %q", cmd)
 			return m, tea.Quit
 		}
 
