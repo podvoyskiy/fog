@@ -11,7 +11,7 @@ const (
 func newFilter(typeF FilterType) Filtering {
 	switch typeF {
 	case typeFuzzy:
-		return &fuzzyFilter{}
+		return NewFuzzyFilter()
 	case typeFrequency:
 		return &FrequencyFilter{}
 	default:

@@ -15,5 +15,5 @@ func (f *filter) Match(commands []string, pattern string) []MatchResult {
 		return matches
 	}
 	// priority 2: fuzzy search
-	return (&fuzzyFilter{}).Match(commands, pattern)
+	return NewFuzzyFilter().Match(commands, pattern)
 }

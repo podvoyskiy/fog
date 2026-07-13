@@ -4,12 +4,18 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/lithammer/fuzzysearch/fuzzy"
+	fz "github.com/podvoyskiy/fuzzymatch"
 )
 
-type fuzzyFilter struct{}
+type fuzzyFilter struct {
+	matcher fz.FuzzyMatcher
+}
 
-var _ Filtering = (*fuzzyFilter)(nil)
+var _ Filtering = &fuzzyFilter{}
+
+func NewFuzzyFilter() *fuzzyFilter {
+	return &fuzzyFilter{matcher: fz.NewMatcher()}
+}
 
 func (f *fuzzyFilter) GetId() uint8 {
 	return typeFuzzy.uint8()
@@ -31,18 +37,17 @@ func (f *fuzzyFilter) Match(commands []string, pattern string) []MatchResult {
 		}
 		seen[cmd] = true
 
-		if fuzzy.Match(pattern, cmd) {
-			rank := fuzzy.RankMatch(pattern, cmd)
+		if score, ok := f.matcher.FuzzyMatch(cmd, pattern); ok {
 			results = append(results, MatchResult{
-				Score: rank,
+				Score: score,
 				Index: i,
 			})
 		}
 	}
 
-	//fuzzy.Match returns lower score for better matches, so sort ascending
+	// sort (higher = better)
 	sort.Slice(results, func(i, j int) bool {
-		return results[i].Score < results[j].Score
+		return results[i].Score > results[j].Score
 	})
 
 	return results

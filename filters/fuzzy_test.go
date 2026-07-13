@@ -6,7 +6,7 @@ import (
 )
 
 func TestFuzzyFilter(t *testing.T) {
-	f := &fuzzyFilter{}
+	f := NewFuzzyFilter()
 
 	tests := []struct {
 		commands []string
