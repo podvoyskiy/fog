@@ -11,12 +11,16 @@ import (
 	u "github.com/podvoyskiy/fog/utils"
 )
 
-const defaultLimit = 10
+const (
+	defaultLimit        = 10
+	defaultMaxFreqBonus = 10
+)
 
 type AppConfig struct {
-	pathToFile string
-	Limit      uint8
-	Filter     f.Filtering
+	pathToFile   string
+	Filter       f.Filtering
+	Limit        uint8
+	MaxFreqBonus uint8
 }
 
 func Load(configDir string) (*AppConfig, error) {
@@ -27,9 +31,10 @@ func Load(configDir string) (*AppConfig, error) {
 	}
 
 	config := &AppConfig{
-		pathToFile: configFile,
-		Limit:      defaultLimit,
-		Filter:     f.Default(),
+		pathToFile:   configFile,
+		Filter:       f.Default(),
+		Limit:        defaultLimit,
+		MaxFreqBonus: defaultMaxFreqBonus,
 	}
 
 	if _, err := os.Stat(config.pathToFile); os.IsNotExist(err) {
@@ -46,7 +51,7 @@ func Load(configDir string) (*AppConfig, error) {
 }
 
 func (c *AppConfig) Update() error {
-	content := fmt.Sprintf("limit=%d\n", c.Limit)
+	content := fmt.Sprintf("limit=%d\nmax_freq_bonus=%d\n", c.Limit, c.MaxFreqBonus)
 
 	return os.WriteFile(c.pathToFile, []byte(content), 0644)
 }
@@ -59,8 +64,7 @@ func (c *AppConfig) PrintStats() error {
 
 	u.Cyan().Bold().Println("Most used commands:")
 
-	f := &f.FrequencyFilter{}
-	topCommands := f.All(history.Commands)
+	topCommands := (&f.FrequencyFilter{}).All(history.Commands)
 
 	for i, cmd := range topCommands {
 		if i >= 40 {
@@ -74,13 +78,26 @@ func (c *AppConfig) PrintStats() error {
 
 func (c *AppConfig) PrintHelp() {
 	u.Yellow().Underline().Println("Options:")
-	fmt.Printf("%s            Show this help\n", u.Blue().Sprint("  -h, --help"))
-	fmt.Printf("%s           Most used commands\n", u.Blue().Sprint("  -s, --stats"))
-	fmt.Printf("%s     Limit results to NUM (current: %d)\n", u.Blue().Sprint("  -l, --limit {NUM}"), c.Limit)
+	fmt.Printf("%s            Show this help\n",
+		u.Blue().Sprint("  -h, --help"),
+	)
+	fmt.Printf("%s           Most used commands\n",
+		u.Blue().Sprint("  -s, --stats"),
+	)
+	fmt.Printf("%s       Limit results to n  | current: %d\n",
+		u.Blue().Sprint("  -l, --limit {n}"),
+		c.Limit,
+	)
+	fmt.Printf("%s  Max frequency bonus | current: %d %s\n",
+		u.Blue().Sprint("  -b, --freq-bonus {n}"),
+		c.MaxFreqBonus,
+		u.Dimmed().Sprint("(0 = disabled)"),
+	)
 }
 
 func (c *AppConfig) ResetToDefaults() {
 	c.Limit = defaultLimit
+	c.MaxFreqBonus = defaultMaxFreqBonus
 	c.Filter = f.Default()
 }
 
@@ -121,6 +138,8 @@ func (c *AppConfig) loadFromConfig() error {
 		switch key {
 		case "limit":
 			c.Limit = value
+		case "max_freq_bonus":
+			c.MaxFreqBonus = value
 		default:
 			return fmt.Errorf("unknown config key: %s", key)
 		}

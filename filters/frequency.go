@@ -1,13 +1,12 @@
 package filters
 
 import (
-	"sort"
 	"strings"
 )
 
 type FrequencyFilter struct{}
 
-var _ Filtering = (*FrequencyFilter)(nil)
+var _ Filtering = &FrequencyFilter{}
 
 func (f *FrequencyFilter) GetId() uint8 {
 	return typeFrequency.uint8()
@@ -41,7 +40,7 @@ func (f *FrequencyFilter) Match(commands []string, pattern string) []MatchResult
 		}
 	}
 
-	f.sortResults(results, commands)
+	SortResults(results, commands)
 
 	return results
 }
@@ -67,17 +66,7 @@ func (f *FrequencyFilter) All(commands []string) []MatchResult {
 		}
 	}
 
-	f.sortResults(results, commands)
+	SortResults(results, commands)
 
 	return results
-}
-
-// sort by frequency (higher = better). if score equal - by command length (shorter better)
-func (f *FrequencyFilter) sortResults(results []MatchResult, commands []string) {
-	sort.Slice(results, func(i, j int) bool {
-		if results[i].Score == results[j].Score {
-			return len(commands[results[i].Index]) < len(commands[results[j].Index])
-		}
-		return results[i].Score > results[j].Score
-	})
 }

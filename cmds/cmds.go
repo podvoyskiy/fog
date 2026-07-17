@@ -31,6 +31,22 @@ func HandleCmd(config *c.AppConfig, args []string) error {
 		}
 		u.Green().Printf("updated settings %s | value: %d\n", cmd, value)
 		return nil
+	case "--freq-bonus", "-b":
+		if len(args) < 2 {
+			return fmt.Errorf("missing value for %q", cmd)
+		}
+
+		value, err := u.Uint8(args[1])
+		if err != nil {
+			return err
+		}
+		config.MaxFreqBonus = value
+
+		if err := config.Update(); err != nil {
+			return err
+		}
+		u.Green().Printf("updated settings %s | value: %d\n", cmd, value)
+		return nil
 	case "-s", "--stats":
 		return config.PrintStats()
 	case "-h", "--help":

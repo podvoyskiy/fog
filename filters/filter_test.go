@@ -26,7 +26,7 @@ func TestFilterDebug(t *testing.T) {
 	for _, pattern := range []string{"ls", "ls  "} {
 		t.Logf("\npattern: %q", pattern)
 
-		for _, typeF := range []FilterType{typeDefault, typeFuzzy, typeFrequency} {
+		for _, typeF := range []FilterType{typeFuzzy, typeFrequency} {
 			f := newFilter(typeF)
 			t.Logf("=== filter: %s ===", typeF)
 

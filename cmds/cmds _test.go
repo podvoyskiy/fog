@@ -22,6 +22,7 @@ func TestHandleCmd(t *testing.T) {
 		{[]string{"-h"}, false},
 		{[]string{"-l", "foo"}, true},
 		{[]string{"--limit", "30"}, false},
+		{[]string{"--freq-bonus", "256"}, true},
 	}
 
 	for i, tt := range tests {
@@ -44,8 +45,10 @@ func TestHandleCmdUpdatesConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = HandleCmd(cfg, []string{"-l", "20"})
-	if err != nil {
+	if err = HandleCmd(cfg, []string{"-l", "20"}); err != nil {
+		t.Fatal(err)
+	}
+	if err = HandleCmd(cfg, []string{"-b", "0"}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -56,5 +59,8 @@ func TestHandleCmdUpdatesConfig(t *testing.T) {
 
 	if newCfg.Limit != 20 {
 		t.Fatalf("config not saved: limit = %d, want 20", newCfg.Limit)
+	}
+	if newCfg.MaxFreqBonus != 0 {
+		t.Fatalf("config not saved: max_freq_bonus = %d, want 0", newCfg.MaxFreqBonus)
 	}
 }

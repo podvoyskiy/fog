@@ -1,7 +1,6 @@
 package filters
 
 import (
-	"sort"
 	"strings"
 
 	fz "github.com/podvoyskiy/fuzzymatch"
@@ -45,10 +44,7 @@ func (f *fuzzyFilter) Match(commands []string, pattern string) []MatchResult {
 		}
 	}
 
-	// sort (higher = better)
-	sort.Slice(results, func(i, j int) bool {
-		return results[i].Score > results[j].Score
-	})
+	SortResults(results, commands)
 
 	return results
 }

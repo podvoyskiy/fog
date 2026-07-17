@@ -33,3 +33,31 @@ func TestUint8(t *testing.T) {
 		})
 	}
 }
+
+func TestCalcFreqBonus(t *testing.T) {
+	tests := []struct {
+		freq         int
+		maxFreqBonus int
+		want         int
+	}{
+		{10, 0, 0},
+		{0, 10, 0},
+		{1, 10, 0},
+		{2, 10, 1},
+		{5, 10, 2},
+		{10, 10, 3},
+		{26, 10, 5},
+		{50, 10, 7},
+		{101, 10, 10},
+		{300, 10, 10},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("case_%d_%d_%d", tt.freq, tt.maxFreqBonus, tt.want), func(t *testing.T) {
+			got := CalcFreqBonus(tt.freq, tt.maxFreqBonus)
+			if got != tt.want {
+				t.Errorf("CalcFreqBonus(%d, %d) = %d, want %d", tt.freq, tt.maxFreqBonus, got, tt.want)
+			}
+		})
+	}
+}
